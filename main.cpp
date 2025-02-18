@@ -1,5 +1,8 @@
 #include "./engine.hpp"
 
+
+#include "stb_image.h"                           
+
 int main() {
     HelloTriangle app;
 
