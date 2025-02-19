@@ -1,7 +1,10 @@
 #include "./engine.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION                 
-#include "stb_image.h"                           
+#include "stb_image.h"          
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "./tiny_obj_loader.h"
 
 static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
     auto app = reinterpret_cast<HelloTriangle*>(glfwGetWindowUserPointer(window));
@@ -121,6 +124,7 @@ void HelloTriangle::initVulkan() {
     createTextureImage();
     createTextureImageView();
     createTextureSampler();
+    loadModel();
     createVertexBuffer();
     createIndexBuffer();
     createUniformBuffers();
@@ -863,7 +867,7 @@ void HelloTriangle::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
     VkBuffer vertexBuffers[] = {vertexBuffer};
     VkDeviceSize offset[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offset);
-    vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
     
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
@@ -1234,7 +1238,9 @@ void HelloTriangle::createDescriptorSets() {
 
 void HelloTriangle::createTextureImage() {
     int texWidth, texHeight, texChannels;
-    stbi_uc* pixels = stbi_load("./textures/saul.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    //stbi_uc* pixels = stbi_load("./textures/saul.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+
     VkDeviceSize imageSize = texWidth * texHeight * 4;
 
     if (!pixels) 
@@ -1497,3 +1503,46 @@ VkFormat HelloTriangle::findDepthFormat() {
 bool HelloTriangle::hasStencilComponent(VkFormat format) {
     return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
+
+void HelloTriangle::loadModel() {
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string warn, err;
+
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) {
+        throw std::runtime_error(warn + err);
+    }
+    
+    std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+
+    for (const auto& shape : shapes) {
+        for (const auto& index : shape.mesh.indices) {
+            Vertex vertex{};
+            
+            vertex.pos = {
+                attrib.vertices[3 * index.vertex_index + 0],
+                attrib.vertices[3 * index.vertex_index + 1],
+                attrib.vertices[3 * index.vertex_index + 2]
+            };
+
+            vertex.texCoord = {
+                attrib.texcoords[2 * index.texcoord_index + 0],
+                1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+            };
+
+            vertex.color = {1.0f, 1.0f, 1.0f};
+
+            vertices.push_back(vertex);
+
+            if (uniqueVertices.count(vertex) == 0) {
+                uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+                vertices.push_back(vertex);
+            }
+
+
+            indices.push_back(uniqueVertices[vertex]);
+        }
+    }
+}
+

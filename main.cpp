@@ -1,7 +1,8 @@
 #include "./engine.hpp"
 
-
 #include "stb_image.h"                           
+
+#include "./tiny_obj_loader.h"
 
 int main() {
     HelloTriangle app;
