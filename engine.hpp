@@ -1,3 +1,4 @@
+#include <vulkan/vulkan_core.h>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -258,7 +259,8 @@ private:
 
   VkImage textureImage;
   VkDeviceMemory textureImageMemory;
-  void createImage(uint32_t width, uint32_t height, VkFormat format,
+  void createImage(uint32_t width, uint32_t height, uint32_t mipLevels,
+                   VkSampleCountFlagBits numSamples, VkFormat format,
                    VkImageTiling tiling, VkImageUsageFlags usage,
                    VkMemoryPropertyFlags properties, VkImage &image,
                    VkDeviceMemory &imageMemory);
@@ -275,7 +277,8 @@ private:
   VkSampler textureSampler;
   void createTextureImageView();
   VkImageView createImageView(VkImage image, VkFormat format,
-                              VkImageAspectFlags aspectFlags);
+                              VkImageAspectFlags aspectFlags,
+                              uint32_t mipLevels);
 
   void createTextureSampler();
 
@@ -296,4 +299,14 @@ private:
   std::unique_ptr<InputHandler> inputHandler;
 
   void initCamera();
+
+  VkSampleCountFlagBits getMaxUsableSampleCount();
+  VkSampleCountFlagBits msaaSamples = VK_SAMPLE_COUNT_1_BIT;
+  uint32_t mipLevels;
+
+  VkImage colorImage;
+  VkDeviceMemory colorImageMemory;
+  VkImageView colorImageView;
+
+  void createColorResources();
 };
