@@ -292,14 +292,6 @@ private:
 
   void loadModel();
 
-  void processInput(GLFWwindow *window);
-  void mouseInput(GLFWwindow *window, double xpos, double ypos);
-  double lastX, lastY;
-
-  glm::vec3 cameraPos = glm::vec3(2.0f, 2.0f, 2.0f);
-  glm::vec3 cameraFront = glm::vec3(-2.0f, -2.0f, -2.0f);
-  glm::vec3 cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
-
   std::unique_ptr<Camera> camera;
   std::unique_ptr<InputHandler> inputHandler;
 

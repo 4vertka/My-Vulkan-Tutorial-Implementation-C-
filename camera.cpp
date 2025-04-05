@@ -3,8 +3,11 @@
 
 Camera::Camera(float fov, float aspectRatio, float nearPlane, float farPlane) {
   position = glm::vec3(0.0f, 0.0f, 5.0f); // Default position
-  front = glm::vec3(0.0f, 0.0f, -1.0f);   // Looking down -Z
-  up = glm::vec3(0.0f, 2.0f, 0.0f);       // Up is +Y
+  // position = glm::vec3(2.0f, 2.0f, 2.0f); // Default position
+  front = glm::vec3(0.0f, 0.0f, -1.0f); // Looking down -Z
+  // front = glm::vec3(-2.0f, -2.0f, -2.0f); // Looking down -Z
+  up = glm::vec3(0.0f, 1.0f, 0.0f); // Up is +Y
+  // up = glm::vec3(0.0f, 0.0f, 1.0f); // Up is +Y
   worldUp = up;
 
   movementSpeed = 2.5f;    // Units per second
@@ -16,6 +19,7 @@ Camera::Camera(float fov, float aspectRatio, float nearPlane, float farPlane) {
   viewMatrix = glm::lookAt(position, position + front, up);
   projectionMatrix =
       glm::perspective(glm::radians(fov), aspectRatio, nearPlane, farPlane);
+  projectionMatrix[1][1] *= -1;
 }
 
 glm::mat4 Camera::getViewMatrix() const { return viewMatrix; }

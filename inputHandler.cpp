@@ -58,13 +58,18 @@ void InputHandler::processMouseMovement(double xpos, double ypos) {
     lastX = static_cast<float>(xpos);
     lastY = static_cast<float>(ypos);
     firstMouse = false;
+    return; // added
   }
 
+  // float xoffset = static_cast<float>(xpos) - lastX;
   float xoffset = static_cast<float>(xpos) - lastX;
-  // float yoffset = lastY - static_cast<float>(ypos); // Reversed: y ranges
-  // bottom to top
 
-  float yoffset = static_cast<float>(ypos) - lastY;
+  // float xoffset = lastX - static_cast<float>(xpos);
+  // float yoffset = lastY - static_cast<float>(ypos); // Reversed: y ranges
+  //  bottom to top
+
+  // float yoffset = static_cast<float>(ypos) - lastY;
+  float yoffset = lastY - static_cast<float>(ypos);
 
   lastX = static_cast<float>(xpos);
   lastY = static_cast<float>(ypos);

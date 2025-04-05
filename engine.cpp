@@ -1234,25 +1234,9 @@ void HelloTriangle::updateUniformBuffer(uint32_t currentImage) {
                    .count();
 
   UniformBufferObject ubo{};
-  ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f),
-                          glm::vec3(0.0f, 0.0f, 1.0f));
-  // ubo.model = glm::mat4(1.0f);
 
-  // ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f,
-  // 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-  // processInput(window);
-  // glfwGetCursorPos(window, &lastX, &lastY);
-  // std::cout << lastX << '\t' << lastY << '\n';
-  // mouseInput(window, lastX, lastY);
-
-  // ubo.view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-  /*ubo.proj = glm::perspective(
-      glm::radians(45.0f),
-      swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 1000.0f);
-
-  ubo.proj[1][1] *= -1;*/
+  ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f),
+                          glm::vec3(0.0f, 0.0f, -1.0f));
 
   ubo.view = camera->getViewMatrix();
   ubo.proj = camera->getProjectionMatrix();
@@ -1649,57 +1633,6 @@ void HelloTriangle::loadModel() {
     }
   }
 }
-
-/*void HelloTriangle::processInput(GLFWwindow * window) {
-    const float cameraSpeed = 0.05f;
-
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) *
-cameraSpeed; if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cameraPos +=
-glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-}
-
-void HelloTriangle::mouseInput(GLFWwindow* window, double xposIn, double yposIn)
-{ float xpos = static_cast<float>(xposIn); float ypos =
-static_cast<float>(yposIn);
-
-   if(firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-   }
-
-   float xoffset = xpos - lastX;
-   float yoffset = lastY - ypos;
-   lastX = xpos;
-   lastY = ypos;
-
-   float sensetivity = 0.1f;
-   xoffset *= sensetivity;
-   yoffset *= sensetivity;
-
-   yaw += xoffset;
-
-   if (yaw >= 359 || yaw <= -359)
-        yaw = 0;
-
-   pitch += yoffset;
-
-   if(pitch > 89.0f)
-       pitch = 89.0f;
-   if(pitch < -89.0f)
-       pitch = -89.0f;
-
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(direction);
-}*/
 
 void HelloTriangle::initCamera() {
   float aspect = static_cast<float>(swapChainExtent.width) /
